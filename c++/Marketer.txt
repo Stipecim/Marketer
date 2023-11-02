@@ -1,0 +1,339 @@
+//Copy Right Iphone Marketer by Stipan Ecim
+
+#include <iostream>
+#include <curl/curl.h>
+#include <vector>
+#include <cctype> // is digit
+#include <fstream> // file 
+#include <sstream> // stream to buffer 
+
+
+/*
+	: learn a bit about curl, practice
+	: Resrch Ebay Advanced Search and how url changes
+	: start 
+*/
+
+/*
+		Basic Plan for Project
+	Since we wont be able to catch site updates trough curl that requires
+	Java Api for c++ extensive librarys we will go a simple way, We will use curl to
+	interact with link, less tideous. 
+*/
+
+/*
+		Iphone's
+	
+	iPhone 
+
+	- Used
+	- Opened never used
+	 - 11
+		 	- 64 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+11&_in_kw=3&_ex_kw=Pro%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=64%2520GB&_dcat=9355
+		 	- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+11&_in_kw=3&_ex_kw=Pro%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+11&_in_kw=3&_ex_kw=Pro%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		- Pro
+		 	- 64 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+11+Pro&_in_kw=3&_ex_kw=Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=64%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+11+Pro&_in_kw=3&_ex_kw=Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+11+Pro&_in_kw=3&_ex_kw=Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+		- Pro Max
+		 	- 64 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+11+Pro+Max&_in_kw=3&_ex_kw=broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=64%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+11+Pro+Max&_in_kw=3&_ex_kw=broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB	
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+11+Pro+Max&_in_kw=3&_ex_kw=broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+	 - 12 ---------------------------
+			- 64 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12&_in_kw=3&_ex_kw=Pro%2C+Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=64%2520GB&_dcat=9355
+		 	- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12&_in_kw=3&_ex_kw=Pro%2C+Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12&_in_kw=3&_ex_kw=Pro%2C+Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		- mini
+			- 64 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12+Mini&_in_kw=3&_ex_kw=Pro%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=64%2520GB&_dcat=9355
+		 	- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12+Mini&_in_kw=3&_ex_kw=Pro%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12+Mini&_in_kw=3&_ex_kw=Pro%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		- Pro
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12+Pro&_in_kw=3&_ex_kw=Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12+Pro&_in_kw=3&_ex_kw=Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12+Pro&_in_kw=3&_ex_kw=Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+		- Pro Max
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12+Pro+Max&_in_kw=3&_ex_kw=Mini%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12+Pro+Max&_in_kw=3&_ex_kw=Mini%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+12+Pro+Max&_in_kw=3&_ex_kw=Mini%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&_salic=3&LH_LocatedIn=1&_sop=12&LH_ItemCondition=3000&LH_BO=1&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+	 - 13 ---------------------------
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13&_in_kw=3&_ex_kw=Pro%2C+Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13&_in_kw=3&_ex_kw=Pro%2C+Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13&_in_kw=3&_ex_kw=Pro%2C+Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+		- mini
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Mini&_in_kw=3&_ex_kw=Pro%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Mini&_in_kw=3&_ex_kw=Pro%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Mini&_in_kw=3&_ex_kw=Pro%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+		- Pro
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Pro&_in_kw=3&_ex_kw=Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Pro&_in_kw=3&_ex_kw=Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Pro&_in_kw=3&_ex_kw=Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+			- 1 TB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Pro&_in_kw=3&_ex_kw=Mini%2C+Max%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=1%2520TB&_dcat=9355
+		- Pro Max
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Pro+Max&_in_kw=3&_ex_kw=Mini%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Pro+Max&_in_kw=3&_ex_kw=Mini%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Pro+Max&_in_kw=3&_ex_kw=Mini%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+			- 1 TB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+13+Pro+Max&_in_kw=3&_ex_kw=Mini%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=1%2520TB&_dcat=9355
+	 - 14 ---------------------------
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14&_in_kw=3&_ex_kw=Plus%2C+Max%2C+Pro%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14&_in_kw=3&_ex_kw=Plus%2C+Max%2C+Pro%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14&_in_kw=3&_ex_kw=Plus%2C+Max%2C+Pro%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+		- Plus
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Plus&_in_kw=3&_ex_kw=Max%2C+Pro%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Plus&_in_kw=3&_ex_kw=Max%2C+Pro%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Plus&_in_kw=3&_ex_kw=Max%2C+Pro%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+		- Pro
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Pro&_in_kw=3&_ex_kw=Max%2C+Plus%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Pro&_in_kw=3&_ex_kw=Max%2C+Plus%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Pro&_in_kw=3&_ex_kw=Max%2C+Plus%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+			- 1 TB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Pro&_in_kw=3&_ex_kw=Max%2C+Plus%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=1%2520TB&_dcat=9355
+		- Pro Max
+			- 128 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Pro+Max&_in_kw=3&_ex_kw=Plus%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=128%2520GB&_dcat=9355
+		 	- 256 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Pro+Max&_in_kw=3&_ex_kw=Plus%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=256%2520GB&_dcat=9355
+		 	- 512 GB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Pro+Max&_in_kw=3&_ex_kw=Plus%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=512%2520GB&_dcat=9355
+			- 1 TB
+				- https://www.ebay.co.uk/sch/9355/i.html?_nkw=iPhone+14+Pro+Max&_in_kw=3&_ex_kw=Plus%2C+broken%2C+replaced%2C+oled%2C+case%2C+box%2C+empty%2C+flexy%2C+stand&LH_TitleDesc=1&LH_Complete=1&LH_Sold=1&LH_BO=1&LH_ItemCondition=3000&_salic=3&LH_LocatedIn=1&_sop=12&LH_PrefLoc=1&rt=nc&Storage%2520Capacity=1%2520TB&_dcat=9355
+*/
+
+/*
+
+
+
+*/
+/*
+	nkw = title of ebay
+	ex_kw = exclude from search 
+	LH_TitleDesc = search by description true/false
+	LH_Sold = search only sold items true/false
+	LH_ItemCondition - 3000 = Used, 1500 = New Never Opened
+	
+	filter 
+		Max, broken, replaced, oled, case, box, empty, flexy, stand
+*/
+std::vector<double> pExtract (std::string& res) { 	// function that will extract prices from string response that got stored from curl 
+	std::vector<double> temp;
+	std::string tmp_a;
+	bool dfound = false;
+							// need to add region identifier !!!! Important !!! 
+	for(int i = 0; i < res.length(); i++) {
+		if(res[i] == '$') {
+			dfound = true;
+			for(int f = i+1; isdigit(res[f]) || res[f] == '.'; f++)
+				tmp_a += res[f];
+		}
+		if (dfound) {
+			temp.pushback(std::stod(tmp_a));
+			tmp_a = "";
+			dfound = false;
+		}
+	}
+	return temp;
+}
+
+double aSum (std::vector<double>& avgp) { 
+	double result = 0.0;
+	for (size_t i = 0; i < avgp.size(); i++) {
+		result += avgp[i];
+	}
+	result = result / avgp.size();
+	return result;
+}
+
+
+// Callback function to write response data to a string
+size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output) {
+    size_t total_size = size * nmemb;
+    output->append(static_cast<char*>(contents), total_size);
+    return total_size;
+}
+
+
+std::string getResponse(std::string link) {  //it returns extracted data from link to response string based on menu selection
+	CURL* curl;
+   	CURLcode res;
+
+	std::string response; // stores curl data in response
+	
+	// Initialize libcurl
+	curl = curl_easy_init();
+    	if (curl) {
+		
+
+		std::string url = link; // chosen link from menu
+        	
+
+        	// Set the URL to fetch
+        	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+        	// Set the write callback function to store the response
+      		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+       		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+       		// Perform the GET request
+        	res = curl_easy_perform(curl);
+
+        	// Check for errors
+        	if (res != CURLE_OK) {
+            		std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+        	}
+       		else {
+            		// Request successful, 'response' contains the web page content
+            		std::cout << "Received data:\n" << response << std::endl;
+        	}
+        	// Cleanup
+        	curl_easy_cleanup(curl);
+    	} else
+		std::cerr << "Failed to initialize libcurl" << std::endl;
+
+	return response;
+}
+
+std::string _txt_to_stirng(std::string fPath) {
+	std::string _str;
+	std::ifstream inputFile("fPath"); // Open the file "menu.txt" for reading
+	
+    	if (!inputFile) {
+        	std::cerr << "Error opening file." << std::endl;
+        	return 1; // Return an error code if the file couldn't be opened
+    	}
+
+    	std::stringstream buffer;
+    	buffer << inputFile.rdbuf();
+    	inputFile.close(); // Close the file when done
+	
+	return	_str;
+}
+
+std::vector<std::string> _split_toSubstring(std::string str) {
+		std::vector<std::string> substrings;
+		std::istringstream iss(str);
+    		std::string token;
+		
+		while (iss >> token) {
+     		   substring.push_back(token);
+		}
+		
+		return substrings;
+}
+std::vector<std::string> _get_menu () { // returns extracted txt menu to vector for readable menu 
+
+
+	std::string _menu = _txt_to_string("menu.txt");
+	
+	std::vector<std::string> lines;
+    	std::istringstream iss(_menu);
+    	std::string line;
+    	while (std::getline(iss, line)) {
+    	    lines.push_back(line);
+    	}
+	
+	return lines;
+	
+}
+
+std::string _get_link(std::vector<std::string> iphone) {	// based on user input gets the right link 
+	std::vector<std::string> data = _split_toSubstring(_txt_to_string("data.txt"));
+	
+	std::string used = "3000;
+	std::string nuopened = "1500";
+	
+	for (int i=0; i < data.length(); i++) {		// not finished 
+		
+		if(
+	}
+
+	return link;
+}
+
+int main()
+{
+	/* Example of use :
+		string response = getResponse();	// function that extracts data from link 
+		std::vector<double> prices = pExtract(response); 	// extracts prices and stores them in vector 
+		double avgp = aSum(prices);		// calculates avreage price and returns 
+	*/	
+
+
+     /* process: displaying menu, takes user input that is sorted in vector iphone, ================
+		 then we store avg price calling: aSum function that calls pExtract
+		 calls getResponse that calls _get_link that has iphone(user input) as argument.
+		 breakdown:
+				_get_link returns desired link via user input in string
+				getResponse returns data from web browser page in string
+				pExtract returns vector that has prices 
+				aSum returns type double avreage price 
+				
+				*/	
+	std::vector<string> iphone; 
+	
+	std::vector<std::string> menu = _menu_get_input(); // menu.txt 
+	
+	for (const std::string& l : lines)
+		std::cout << l << std::endl;	// print menu.txt
+
+	
+	std::cout << "use: -nuopened -12 -mini -256" << std:endl; // example of use
+	
+	{	
+		std::string iphone_tmp;
+		std::cin >> iphone_tmp; // get user in put 
+		
+		iphone = _split_toSubstring(iphone_tmp);
+	}
+	
+	double avgp = aSum(pExtract(getResponse(_get_link(iphone))));
+	
+	std::cout << " avreage price: " << avgp << std::endl;;
+
+    // ======================================================================
+
+	return 0;
+}

@@ -1,0 +1,72 @@
+
+		Iphone's
+	
+	iPhone 
+
+	- Used
+	- Opened never used
+
+	 - 11
+		 	- 64 GB
+		 	- 128 GB
+			- 256 GB
+		- Pro
+		 	- 64 GB
+			- 256 GB
+			- 512 GB
+		- Pro Max
+		 	- 64 GB
+			- 256 GB
+			- 512 GB	
+	- 12 ---------------------------
+			- 64 GB
+			- 128 GB
+			- 256 GB
+		- mini
+			- 64 GB
+			- 128 GB
+			- 256 GB
+		- Pro
+			- 128 GB
+			- 256 GB
+			- 512 GB
+		- Pro Max
+			- 128 GB
+			- 256 GB
+			- 512 GB
+	- 13 ---------------------------
+			- 128 GB
+			- 256 GB
+			- 512 GB
+		- mini
+			- 128 GB
+			- 256 GB
+			- 512 GB
+		- Pro
+			- 128 GB
+			- 256 GB
+			- 512 GB
+			- 1 TB
+		- Pro Max
+			- 128 GB
+			- 256 GB
+			- 512 GB
+			- 1 TB
+	- 14 ---------------------------
+			- 128 GB
+			- 256 GB
+			- 512 GB
+		- Plus
+			- 128 GB
+			- 256 GB
+			- 512 GB
+		- Pro
+			- 128 GB
+			- 256 GB
+			- 512 GB
+			- 1 TB
+		- Pro Max
+			- 128 GB
+			- 256 GB
+			- 512 GB
+			- 1 TB
