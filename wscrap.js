@@ -4,7 +4,7 @@ const fs = require('fs');
 const file = 'data.txt';
 
 
-const eItems = []; // array that stores objects of class iPhone
+const eItems = []; // array that stores objects of class iPhone's
 class eItem { // ebay Item
 	constructor(model, storage, link) {
 		this.model = model;
