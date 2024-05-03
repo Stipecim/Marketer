@@ -12,6 +12,8 @@ export default function App() {
     const [data, setData] = useState<facebookMarketplaceProduct[] | null>(null);
     const [loading, setLoading] = useState(false);
 
+    //const [request, setRequest] = useState("empty");
+
     useEffect(() => {
         GetIphonesFromStorage();
     }, []);
@@ -28,7 +30,9 @@ export default function App() {
                 // attempt fetch
                 const newResponse = await agent.facebookMarketPlace.list();
                 const Data: facebookMarketplaceProduct[] = newResponse.Data;
-                setData(data);
+                setData(Data);
+                // const serializedResponse = JSON.stringify(newResponse);
+                // setRequest(serializedResponse);
              }
             
             

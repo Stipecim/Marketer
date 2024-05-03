@@ -1,7 +1,7 @@
 import  Constants  from "expo-constants";
 import axios, { AxiosResponse } from "axios";
 
-axios.defaults.baseURL = ""; // before fore fetch address needed 
+axios.defaults.baseURL = "84.64.67.3:6553"; // before fore fetch address needed 
 
 
 
