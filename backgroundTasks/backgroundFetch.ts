@@ -1,4 +1,8 @@
 
+
+// Currently not use full for project, not any plans including backgeround taks as it was originaly ment for notification
+// after push notifications there is need 
+
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import agent from '../Api/agent';

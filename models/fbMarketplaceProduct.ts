@@ -4,3 +4,8 @@ interface facebookMarketplaceProduct {
     price: string | null;
     location: string | null;
 }
+
+// add more
+// name change to model
+// add avreage price
+// possibly more stuff 

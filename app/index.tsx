@@ -6,76 +6,93 @@ import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import agent from "../Api/agent";
+import { pushNotifications } from "../backgroundTasks/pushNotifications";
 
 
 export default function App() {
-    const [data, setData] = useState<facebookMarketplaceProduct[] | null>(null);
-    const [loading, setLoading] = useState(false);
 
-    //const [request, setRequest] = useState("empty");
+    const {expoPushToken, notification} = pushNotifications();
+
+    const data = JSON.stringify(notification, undefined, 2);
+    console.log(`${expoPushToken?.data}`);
+
+   // NEW LOGIC NEEDS TO BE APPLIED !!! 
+
+
+    // const [data, setData] = useState<facebookMarketplaceProduct[] | null>(null);
+    // const [loading, setLoading] = useState(false);
+
+    // //const [request, setRequest] = useState("empty");
 
     useEffect(() => {
-        GetIphonesFromStorage();
-    }, []);
+        if(expoPushToken !== undefined) agent.sendTokenToServer.send(expoPushToken);
+    }, [expoPushToken]);
 
-    async function GetIphonesFromStorage() {
-        try {
-            setLoading(true);
-            const response = await AsyncStorage.getItem('fbmk-iphones');
-            if (response !== null) {
-                const parsedData: facebookMarketplaceProduct[] = JSON.parse(response);
-                setData(parsedData);
-                console.log("Getting Stored Data:", parsedData);
-            }else{
-                // attempt fetch
-                const newResponse = await agent.facebookMarketPlace.list();
-                const Data: facebookMarketplaceProduct[] = newResponse.Data;
-                setData(Data);
-                // const serializedResponse = JSON.stringify(newResponse);
-                // setRequest(serializedResponse);
-             }
+    // async function GetIphonesFromStorage() {
+    //     try {
+    //         setLoading(true);
+    //         const response = await AsyncStorage.getItem('fbmk-iphones');
+    //         if (response !== null) {
+    //             const parsedData: facebookMarketplaceProduct[] = JSON.parse(response);
+    //             setData(parsedData);
+    //             console.log("Getting Stored Data:", parsedData);
+    //         }else{
+    //             // attempt fetch
+    //             const newResponse = await agent.facebookMarketPlace.list();
+    //             const Data: facebookMarketplaceProduct[] = newResponse.Data;
+    //             setData(Data);
+    //             // const serializedResponse = JSON.stringify(newResponse);
+    //             // setRequest(serializedResponse);
+    //          }
             
             
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
-            console.log("Error fetching from storage:", error);
-        }
-    }
+    //         setLoading(false);
+    //     } catch (error) {
+    //         setLoading(false);
+    //         console.log("Error fetching from storage:", error);
+    //     }
+    // }
 
-    if (loading) {
-        return <Text>Loading...</Text>;
-    }
+    // if (loading) {
+    //     return <Text>Loading...</Text>;
+    // }
 
-    console.log("Data:", data )
-    if (data === null || data === undefined) {
-        return (
-            <>
-            <View style={styles.container}>
-                <Text style={{margin: 10}}>No data available press the switch and close the app</Text>
-                <Pressable style={styles.button} onPress={() => GetIphonesFromStorage()}>
-                    <Text style={styles.text}>Reload</Text>
-                </Pressable>
-            </View>
-            </>
-        );
-    }
+    // console.log("Data:", data )
+    // if (data === null || data === undefined) {
+    //     return (
+    //         <>
+    //         <View style={styles.container}>
+    //             <Text style={{margin: 10}}>No data available press the switch and close the app</Text>
+    //             <Pressable style={styles.button} onPress={() => GetIphonesFromStorage()}>
+    //                 <Text style={styles.text}>Reload</Text>
+    //             </Pressable>
+    //         </View>
+    //         </>
+    //     );
+    // }
 
+
+    // return (
+    //     <ScrollView>
+    //         {data.map(item => (
+    //             <View key={item.id}>
+    //                 <Card>
+    //                     <Card.Title>{item.name}</Card.Title>
+    //                     <Card.Divider />
+    //                     <Text>Price: {item.price}</Text>
+    //                     <Text>Location: {item.location}</Text>
+    //                 </Card>
+    //             </View>
+    //         ))}
+    //     </ScrollView>
+    // );
 
     return (
-        <ScrollView>
-            {data.map(item => (
-                <View key={item.id}>
-                    <Card>
-                        <Card.Title>{item.name}</Card.Title>
-                        <Card.Divider />
-                        <Text>Price: {item.price}</Text>
-                        <Text>Location: {item.location}</Text>
-                    </Card>
-                </View>
-            ))}
-        </ScrollView>
-    );
+        <View style={styles.container}>
+            <Text>Token: {expoPushToken?.data ?? ""}</Text>
+            <Text>{data}</Text>
+        </View>
+    )
 }
 
 const screenWidth = Dimensions.get('window').width;

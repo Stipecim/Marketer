@@ -11,7 +11,8 @@ import { BackgroundFetchStatus } from 'expo-background-fetch';
 export default function RootLayout() {
     const [isEnabled, setIsEnabled] = useState(false);
    
-
+    // NEEDS TO BE CHANGED COMPLETY 
+    
     // background state checking state //
     const [isRegistered, setIsRegistered] = useState(false);
     const [status, setStatus] = useState<BackgroundFetchStatus | null>(null);
