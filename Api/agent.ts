@@ -1,8 +1,7 @@
-import  Constants  from "expo-constants";
 import axios, { AxiosResponse } from "axios";
 import {ExpoPushToken } from "expo-notifications";
 
-axios.defaults.baseURL = ""; // fetch address needed  // need the env file 
+axios.defaults.baseURL = "http://192.168.1.53:6553"; // fetch address needed  // need the env file 
 
 // interceptor, new lines for push tokens 
 // more api fetch 
@@ -14,16 +13,16 @@ const requests = {
     post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
 }
 
-const facebookMarketPlace = {
-    list: () => requests.get("iphoneproducts").then(responseBody),
+const getMarketItems = {
+    marketitems: () => requests.get("/marketitems")
 }
 
 const sendTokenToServer = {
-    send: (token: ExpoPushToken) => requests.post("postToken", {token}),
+    send: (token: ExpoPushToken) => requests.post("/updatetoken", token),
 }
 
 const agent = {
-    facebookMarketPlace,
+    getMarketItems,
     sendTokenToServer,
 }
 

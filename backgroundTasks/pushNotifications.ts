@@ -2,17 +2,23 @@
 // possibly apply different structre to this 
 
 import { useState, useEffect, useRef } from 'react';
-import { Text, View, Button, Platform } from 'react-native';
+import { Platform} from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import agent from '../Api/agent';
+import { useAppDispatch } from '../cache/store';
+import { setShouldFetch } from '../cache/slices/marketItemSlice';
+
+
+
+
 
 export interface PushNotificationState {
     notification?: Notifications.Notification;
     expoPushToken?: Notifications.ExpoPushToken;
 }
 export const pushNotifications = (): PushNotificationState => {
+    const dispatch = useAppDispatch();
     Notifications.setNotificationHandler({
         handleNotification: async () => ({
             shouldPlaySound: true,
@@ -48,13 +54,9 @@ export const pushNotifications = (): PushNotificationState => {
             }
 
             
-            
-            const deviceToken = await Notifications.getDevicePushTokenAsync();
          
             token = await Notifications.getExpoPushTokenAsync({
                 projectId: Constants.expoConfig?.extra?.eas?.projectId,
-                devicePushToken: deviceToken
-
             });
 
             if (Platform.OS === 'android' ) {
@@ -76,6 +78,8 @@ export const pushNotifications = (): PushNotificationState => {
     }
 
     useEffect(() => {
+
+        
     
         registerForPushNotificationsAsync().then((token) => {
             setExpoPushToken(token);
@@ -85,6 +89,8 @@ export const pushNotifications = (): PushNotificationState => {
         notificationListener.current = 
             Notifications.addNotificationReceivedListener((notification) => {
                 setNotification(notification);
+                dispatch(setShouldFetch(true));
+                console.log("Here from addNotificationReceivedListener");
             });
 
         responseListener.current = 

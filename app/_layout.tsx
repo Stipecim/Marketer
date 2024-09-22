@@ -2,72 +2,59 @@ import {Drawer} from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Ionicon from '@expo/vector-icons/Ionicons';
 
-import { Switch, View, StyleSheet } from 'react-native';
-import { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
+
 import React from 'react';
-import BgFetch from '../backgroundTasks/backgroundFetch';
-import { BackgroundFetchStatus } from 'expo-background-fetch';
+
+import { Provider } from 'react-redux';
+import { persistor, store } from '../cache/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import HeaderButton from '../components/HeaderButton';
+
+// import { getMarketItems, setShouldFetch } from '../cache/slices/marketItemSlice';
+// import { sortRoutes } from 'expo-router/build/sortRoutes';
+
+
+
+
+// const BACKGROUND_NOTIFICATION_TASK = 'BACKGROUND-NOTIFICATION-TASK';
+
+// TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, ({ data, error, executionInfo }) => {
+//     if (error) {
+//         console.error("Error with background notification task:", error);
+//         return;
+//     }
+//     console.log('Received a notification in the background!');
+    
+//     store.dispatch(setShouldFetch(true));
+    
+// });
+
+// Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
 
 export default function RootLayout() {
-    const [isEnabled, setIsEnabled] = useState(false);
    
-    // NEEDS TO BE CHANGED COMPLETY 
-    
-    // background state checking state //
-    const [isRegistered, setIsRegistered] = useState(false);
-    const [status, setStatus] = useState<BackgroundFetchStatus | null>(null);
-
-
-    useEffect(()=> {
-        checkStatusAsync();
-    }, []);
-    
-
-    const checkStatusAsync = async () => {
-        const status = await BgFetch.BackgroundFetch.getStatusAsync();
-        const isRegistered = await BgFetch.TaskManager.isTaskRegisteredAsync(BgFetch.BACKGROUND_FETCH_TASK);
-        setStatus(status);
-        setIsRegistered(isRegistered);
-        setIsEnabled(isRegistered);
-        console.log("isRegistered:", isRegistered);
-        console.log("status:", status);
-    };
-
-
-    const toggleFetchTask = async () => {
-        if (isRegistered) {
-          await BgFetch.unregisterBackgroundFetchAsync();
-          console.log("unregistered");
-        } else {
-          await BgFetch.registerBackgroundFetchAsync();
-          console.log("registered");
-        }
-    
-        checkStatusAsync();
-    };
 
     return (
+        <Provider store={store} >
+        <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView style={{flex: 1}}>
             <Drawer>
                 <Drawer.Screen name='index' options={{
                     title: 'Marketer',
-                    headerRight: () => (
-                        <View style={styles.container}>
-                            <Switch 
-                                trackColor={{false: '#767577', true: '#c1e6c3'}}
-                                thumbColor={isEnabled ? '#9cd99f' : '#767577'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={toggleFetchTask}
-                                value={isEnabled}
-                            />
-                        </View>
-                    ),
                     drawerIcon: ({size, color}) => (
                         <Ionicon name='home-outline' size={size} color={color}/>
-                    )
+                    ),
+                    headerRight:  () => <HeaderButton />,
+                }} />
+                <Drawer.Screen name='settings' options={{
+                    title: 'Settings'
                 }} />
             </Drawer>
+            
         </GestureHandlerRootView>
+        </PersistGate>
+        </Provider>
     )
 }
 
@@ -78,4 +65,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       margin: 10,
     },
+    button: {
+        marginRight: 20
+    }
   });
