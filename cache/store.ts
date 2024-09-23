@@ -3,20 +3,18 @@ import { persistStore, persistReducer, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, R
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers } from 'redux';
 import marketItemReducer from './slices/marketItemSlice';
-import settingsReducer from './slices/settingsSlice';
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
 
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['marketItems', 'settings'], // Only persist the iphoneList slice
+  whitelist: ['marketItems'], // Only persist the iphoneList slice
   
 };
 
 const rootReducer = combineReducers({
   marketItems: marketItemReducer,
-  settings: settingsReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

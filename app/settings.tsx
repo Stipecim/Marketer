@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Button, Text, TextInput, StyleSheet } from 'react-native';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { setServerIp } from '../cache/slices/settingsSlice'; // Ensure this path is correct
+import { Card } from '@rneui/base';
+import { usesettingsStore } from '../cache/settings';
 
 type FormData = {
   ipOrDns: string;
@@ -10,7 +10,7 @@ type FormData = {
 
 export default function Settings() {
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
-  const dispatch = useDispatch();
+  const setIpAddress = usesettingsStore(state => state.setIpAddress);
 
   // Validation functions
   const isValidIPv4 = (ip: string) => {
@@ -32,13 +32,14 @@ export default function Settings() {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     const { ipOrDns } = data;
     if (isValidIPv4(ipOrDns) || isValidIPv6(ipOrDns) || isValidDNS(ipOrDns)) {
-      dispatch(setServerIp(ipOrDns)); // Dispatch to Redux store
+      setIpAddress(ipOrDns); 
     } else {
       console.log("Invalid IP/DNS");
     }
   };
 
   return (
+    <Card>
     <View style={styles.container}>
       <Text style={styles.label}>Enter IP Address or DNS:</Text>
 
@@ -60,15 +61,23 @@ export default function Settings() {
       {/* Display validation error */}
       {errors.ipOrDns && <Text style={styles.errorText}>{errors.ipOrDns.message}</Text>}
 
-      <Button title="Save" onPress={handleSubmit(onSubmit)} />
+      <Button title="Apply" onPress={handleSubmit(onSubmit)} />
     </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
+  card: {
+    width: '90%', // Card will take 90% of the screen width
+    alignSelf: 'center', // Center the card horizontally
+    padding: 20, // Control internal padding of the card
+    marginVertical: 20, // Add space around the card
+    borderRadius: 10, // Optional: round corners for aesthetics
+  },
   container: {
-    flex: 1,
-    padding: 20,
+    // flex: 1,
+    // padding: 20,
     justifyContent: 'center',
   },
   label: {
@@ -85,5 +94,10 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 10,
+  },
+  buttonContainer: {
+    marginTop: 20, // Add some space above the button
+    alignItems: 'center', // Center the button horizontally
   }
+
 });

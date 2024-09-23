@@ -1,7 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import {ExpoPushToken } from "expo-notifications";
+import { usesettingsStore } from "../cache/settings";
 
-axios.defaults.baseURL = "http://192.168.1.53:6553"; // fetch address needed  // need the env file 
+const serverIp = usesettingsStore.getState().serverIp;
+
+
+axios.defaults.baseURL = serverIp ? "http://" + serverIp + ":6553" : undefined; //"http://192.168.1.53:6553"; // fetch address needed  // need the env file 
 
 // interceptor, new lines for push tokens 
 // more api fetch 
