@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import {create} from 'zustand';
 
 
@@ -18,13 +19,14 @@ export const usesettingsStore = create<settingsState> ((set) => ({
     setIpAddress: (ipAddress: string) => {
         set({ serverIp: ipAddress });
         AsyncStorage.setItem('ipAddress', ipAddress); // Save to AsyncStorage
+        axios.defaults.baseURL = `http://${ipAddress}:6553`
         console.log(ipAddress);
     },
 
     loadIpAddress: async () => {
         const savedIpAddress = await AsyncStorage.getItem('ipAddress');
-        console.log(savedIpAddress);
-
+        console.log("savedIPADress:", savedIpAddress);
+        axios.defaults.baseURL = `http://${savedIpAddress}:6553`
         if (savedIpAddress) {
             set({ serverIp: savedIpAddress });
         }

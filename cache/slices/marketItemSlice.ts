@@ -1,8 +1,9 @@
-import { createSlice, createAsyncThunk, miniSerializeError } from '@reduxjs/toolkit';
-import agent from '../../Api/agent'; // Import your API agent
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import agent from '../../Api/agent'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import marketItem from '../../models/marketItem';
 import { RootState } from '../store';
+import NetInfo from '@react-native-community/netinfo';
 
 
 export interface marketItemState {
@@ -25,6 +26,15 @@ export const getMarketItems = createAsyncThunk(
         
         try {
             const marketItemsState = (getState() as RootState).marketItems;
+
+            const netState = await NetInfo.fetch(); // Check network state
+            
+            if (!netState.isConnected) {
+                console.warn("You are offline. Using cached data.");
+                // If offline, use cached data
+                const cachedMarketItems = await AsyncStorage.getItem('marketitems');
+                return cachedMarketItems ? JSON.parse(cachedMarketItems) : [];
+            }
             
             if (marketItemsState.shouldFetch) {
                 
@@ -64,8 +74,10 @@ const marketItemSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getMarketItems.pending, (state) => {
-                state.loading = true;
-                state.error = null;
+                if (!state.loading) {
+                    state.loading = true;
+                    state.error = null;
+                }
             })
             .addCase(getMarketItems.fulfilled, (state, action) => {
                 state.loading = false;
@@ -75,6 +87,7 @@ const marketItemSlice = createSlice({
             .addCase(getMarketItems.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || null;
+                state.shouldFetch = false;
             });
     }
 });

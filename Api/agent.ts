@@ -1,14 +1,30 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import {ExpoPushToken } from "expo-notifications";
 import { usesettingsStore } from "../cache/settings";
+
 
 const serverIp = usesettingsStore.getState().serverIp;
 
 
-axios.defaults.baseURL = serverIp ? "http://" + serverIp + ":6553" : undefined; //"http://192.168.1.53:6553"; // fetch address needed  // need the env file 
+axios.interceptors.response.use(
+    (response) => {
+      
+      return response;
+    },
+    async (error: AxiosError) => {
+     
+        
+    if (error.response) {
+        const { status } = error.response;
+        console.error(`Error ${status}:`, error.response.data);
+      } else {
+        console.error("Network or Server error:", error.message);
+      }
+       
+      return Promise.reject(error.response);
+    }
+);
 
-// interceptor, new lines for push tokens 
-// more api fetch 
 
 const responseBody = (response: AxiosResponse) => response.data;
 

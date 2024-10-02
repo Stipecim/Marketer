@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Button, Text, TextInput, StyleSheet } from 'react-native';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { Card } from '@rneui/base';
@@ -9,8 +9,13 @@ type FormData = {
 };
 
 export default function Settings() {
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
-  const setIpAddress = usesettingsStore(state => state.setIpAddress);
+  const { control, handleSubmit,setValue, formState: { errors } } = useForm<FormData>();
+  const {setIpAddress, serverIp} = usesettingsStore(state => state);
+  
+
+  useEffect((()=>{
+    if(serverIp) setValue('ipOrDns', serverIp || '')
+  }), [])
 
   // Validation functions
   const isValidIPv4 = (ip: string) => {
@@ -47,11 +52,12 @@ export default function Settings() {
       <Controller
         control={control}
         name="ipOrDns"
+        defaultValue={serverIp}
         rules={{ required: 'This field is required' }} // Adding required validation
         render={({ field: { onChange, value } }) => (
           <TextInput
             style={styles.input}
-            placeholder="Enter IP or DNS"
+            placeholder="Enter IP or DNS" 
             value={value}
             onChangeText={onChange}
           />

@@ -6,8 +6,8 @@ import { Platform} from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import { useAppDispatch } from '../cache/store';
-import { setShouldFetch } from '../cache/slices/marketItemSlice';
+// import { useAppDispatch } from '../cache/store';
+// import { setShouldFetch } from '../cache/slices/marketItemSlice';
 
 
 
@@ -18,7 +18,7 @@ export interface PushNotificationState {
     expoPushToken?: Notifications.ExpoPushToken;
 }
 export const pushNotifications = (): PushNotificationState => {
-    const dispatch = useAppDispatch();
+    //const dispatch = useAppDispatch();
     Notifications.setNotificationHandler({
         handleNotification: async () => ({
             shouldPlaySound: true,
@@ -89,8 +89,8 @@ export const pushNotifications = (): PushNotificationState => {
         notificationListener.current = 
             Notifications.addNotificationReceivedListener((notification) => {
                 setNotification(notification);
-                dispatch(setShouldFetch(true));
-                console.log("Here from addNotificationReceivedListener");
+                //dispatch(setShouldFetch(true));
+                //console.log("Here from addNotificationReceivedListener");
             });
 
         responseListener.current = 

@@ -16,12 +16,16 @@ export const MarketItemsList = () => {
     }, [dispatch, shouldFetch]);
 
     if (loading) {
-        return <ActivityIndicator size="large" color="#0000ff" />;
+        return (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )
     }
 
-    if (error) {
-        return <Text>Error: {error}</Text>;
-    }
+    // if (error) {
+    //     return <Text>Error: {error}</Text>;
+    // }
 
     return (
         <>
@@ -55,28 +59,33 @@ export const MarketItemsList = () => {
 
 const screenWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+  loaderContainer: {
+    flex: 1,                // Ensures the view takes up the entire screen
+    justifyContent: 'center',  // Centers the content vertically
+    alignItems: 'center',      // Centers the content horizontally
+  },
+  container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+  },
+  button: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 10, // Decreased padding to fit smaller screens
+      paddingHorizontal: 24, // Decreased padding to fit smaller screens
+      borderRadius: 8, // Increased border radius for a more rounded button
+      elevation: 3,
+      backgroundColor: 'black',
+      width: screenWidth * 0.4,
     },
-    button: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 10, // Decreased padding to fit smaller screens
-        paddingHorizontal: 24, // Decreased padding to fit smaller screens
-        borderRadius: 8, // Increased border radius for a more rounded button
-        elevation: 3,
-        backgroundColor: 'black',
-        width: screenWidth * 0.4,
-      },
-      text: {
-        fontSize: 14, // Decreased font size for better readability on smaller screens
-        lineHeight: 18, // Decreased line height for better text alignment on smaller screens
-        fontWeight: 'bold',
-        letterSpacing: 0.25,
-        color: 'white',
-      },
-  });
+    text: {
+      fontSize: 14, // Decreased font size for better readability on smaller screens
+      lineHeight: 18, // Decreased line height for better text alignment on smaller screens
+      fontWeight: 'bold',
+      letterSpacing: 0.25,
+      color: 'white',
+    },
+});
   
 export default MarketItemsList;
