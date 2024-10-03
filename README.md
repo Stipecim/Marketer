@@ -9,7 +9,7 @@ Mobile app, a tool for private seller enthusiasts to receive frequent notificati
 Download Marketer.apk from repository and run.
 
 ## Usage
-Before using the app, you need to set up the [WebScrap-Server](https://github.com/Stipecim/WScrap-Marketer) After that, run the server.
+Before using the app, you will need to set up the [WebScrap-Server](https://github.com/Stipecim/WScrap-Marketer) After that, run the server.
 Open Settings and enter your public IP or DNS server `e.g 43.22.33.12`, You do not need to include the port number.
 
 
