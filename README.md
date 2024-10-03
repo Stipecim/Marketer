@@ -1,3 +1,5 @@
+> **Note:** This is my first application, so obviously might have security or any other issues.
+> This server only works for uk. I might extend it in near future.
 # Marketer
 Mobile app, a tool for private seller enthusiasts to receive frequent notifications from Facebook and Gumtree. It works in conjunction with a [WebScrap-Server](https://github.com/Stipecim/WScrap-Marketer) and cannot function without it.
 
